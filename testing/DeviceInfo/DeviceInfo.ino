@@ -18,3 +18,11 @@ void displayInfo(void) {
   Serial.printf("Device ID: qN-%i.%i.%i\n",getHardwareID(),getHardwareMajorRev(),getHardwareMinorRev());
   Serial.printf("Firmware Revision: %i.%i.%i\n", getFirmwareMajorRev(),getFirmwareMinorRev(),getFirmwarePatchRev());  
 }
+
+void loop() {
+  static unsigned long lastrun = 0;
+  if (millis() > lastrun) {
+    lastrun = millis() + 500;
+    toggleLEDBlue();
+  }
+}

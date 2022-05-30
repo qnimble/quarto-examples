@@ -1,13 +1,13 @@
 #include "qCommand.h"
 qCommand qC;
 
-const uint SampleRate = 12;
+const uint SampleRate = 2;
 
 double frequency = 10e3;
 double phase = 0;
 double amplitude = 5;
-double filter = 10; //default 1kHz
-double alpha = .000126; // alpha for default 1 kHz
+double filter = 1e3; //default 1kHz
+double alpha = 0.012488; // alpha for default 1 kHz
 double output = 0;
 
 void setup(void) {
@@ -17,8 +17,6 @@ void setup(void) {
   qC.assignVariable("Amp",&amplitude);
   qC.assignVariable("Output",&output);
   qC.addCommand("Filter",&adjFilter);
-  triggerMode(1,OUTPUT);
-  triggerMode(2,OUTPUT);
 }
 
 void loop(void) {
@@ -27,7 +25,6 @@ void loop(void) {
 }
 
 void getADC1(void) {
-  //triggerWrite(1,1);
   static double nextSin = 0;
   static double nextSinWithPhase = 0;
   static double cycle = 0; //track phase/(2*pi) which is cycle fraction (one cycle=2pi).
@@ -35,23 +32,13 @@ void getADC1(void) {
 
   writeDAC(1,amplitude*nextSin); //DAC output is sin(2*pi*cycle)
   double multiplied = newadc * nextSinWithPhase; //put phase in units if degrees
-  writeDAC(2,multiplied);
   output = alpha * multiplied + (1-alpha) * output; //apply IIR filter on multiplied value
-
-  //writeDAC(2,output);
-  //writeDAC(2,newadc);
-  //triggerWrite(1,0);
-  //triggerWrite(2,1);
-
+  writeDAC(2,output);
 
   cycle += frequency / (1e6/SampleRate); //1e6/SampleRate is sample freq (500kHz);  freq normed to that
   if (cycle > 1) cycle -= 1; //reset phase so no overflows
   nextSin = sin(2*PI*cycle);
   nextSinWithPhase = sin(2*PI*(cycle + phase/360));
-  
-
-  //triggerWrite(1,0);
-
 }
 
 void adjFilter(qCommand& qC, Stream& S) {
@@ -69,5 +56,5 @@ void adjFilter(qCommand& qC, Stream& S) {
       alpha = 2 * y / (y+1);
     }
   }
-    S.printf("The filter frequency is %f (and alpha=%f)\n",filter,alpha);
+  S.printf("The filter frequency is %f (and alpha=%f)\n",filter,alpha);
 }

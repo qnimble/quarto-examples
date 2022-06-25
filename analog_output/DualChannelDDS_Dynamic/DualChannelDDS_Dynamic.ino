@@ -5,7 +5,7 @@ IntervalTimer updateTimer;
 IntervalTimer blink; // use timer to cause LED to blink
 
 /* Fixed Constants */
-const uint8_t updateRate = 2; //sample every 5us
+const uint8_t updateRate = 5; //sample every 5us
 
 /* Adjustable global variables */
 double frequency = 10e3; //default 10kHz

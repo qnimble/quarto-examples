@@ -1,6 +1,6 @@
 /*
   This example will let you use an external 10 MHz reference, input on Trigger 1, 
-  to drive all the clockson the Quarto. To enable, type 'ext on' into the serial
+  to drive all the clocks on the Quarto. To enable, type 'ext on' into the serial
   port. If an external clock is not input, or is not close to 10 MHz, the Quarto
   will use an internal reference instead. The 'ext' command will show the state
   of the clock. Additionally, the green LED will flash when using an external 
@@ -60,7 +60,7 @@ void notSupported(qCommand& qC, Stream& S) {
 void extCommand(qCommand& qC, Stream& S) {
   if ( qC.next() != NULL) {
     bool enable = qC.str2Bool(qC.current());
-    useExtClock(enable);
+    useExtClock(enable,1); //use trigger 1 as external clock
   }
   bool status = readExtClockEnabled();
   if (status) {
